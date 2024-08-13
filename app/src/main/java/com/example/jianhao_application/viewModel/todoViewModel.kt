@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TodoViewModel : ViewModel() {
-    private val _todoState = MutableStateFlow<TodoState>(TodoState.Idle)
+    val _todoState = MutableStateFlow<TodoState>(TodoState.Idle)
     val todoState: StateFlow<TodoState> = _todoState
 
     private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
@@ -24,7 +24,6 @@ class TodoViewModel : ViewModel() {
         viewModelScope.launch {
             _todoState.value = TodoState.Loading
             try {
-                // 模拟从服务器加载 todo 列表
                 val todoList = listOf(
                     TodoItem("1", "Sample Todo 1", false),
                     TodoItem("2", "Sample Todo 2", false)
@@ -38,6 +37,7 @@ class TodoViewModel : ViewModel() {
     }
 
     fun createTodo(name: String) {
+        if (name.isBlank()) return
         viewModelScope.launch {
             val newTodo = TodoItem("id", name, false)
             _todos.value = _todos.value + newTodo
